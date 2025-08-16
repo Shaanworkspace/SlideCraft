@@ -77,8 +77,8 @@ export const TopToolbar: React.FC<TopToolbarProps> = ({ onExportSlide }) => {
       }
       
       toast({
-        title: "Presentation saved",
-        description: "Your presentation has been saved successfully.",
+        title: "PPTX downloaded",
+        description: "Your presentation has been saved as a PowerPoint file.",
       });
     } catch (error) {
       toast({
@@ -161,7 +161,7 @@ export const TopToolbar: React.FC<TopToolbarProps> = ({ onExportSlide }) => {
             data-testid="button-save-presentation"
           >
             <Save className="w-4 h-4 mr-1" />
-            Save
+            Save PPTX
           </Button>
 
           <Button

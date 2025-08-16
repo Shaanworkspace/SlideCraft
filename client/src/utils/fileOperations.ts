@@ -1,4 +1,5 @@
 import { Presentation } from '@shared/schema';
+import PptxGenJS from 'pptxgenjs';
 
 export interface FileOperations {
   savePresentation: (presentation: Presentation) => void;
@@ -6,28 +7,127 @@ export interface FileOperations {
   exportSlideAsImage: (dataUrl: string, fileName?: string) => void;
 }
 
-// Save presentation as JSON file
-export const savePresentation = (presentation: Presentation): void => {
+// Save presentation as PPTX file
+export const savePresentation = async (presentation: Presentation): Promise<void> => {
   try {
-    const dataStr = JSON.stringify(presentation, null, 2);
-    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+    const pptx = new PptxGenJS();
     
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(dataBlob);
-    link.download = `${presentation.title || 'presentation'}.json`;
+    // Set presentation properties
+    pptx.author = 'PowerPoint Editor';
+    pptx.company = 'Local App';
+    pptx.title = presentation.title;
     
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    // Add slides
+    presentation.slides.forEach((slide, index) => {
+      const pptxSlide = pptx.addSlide();
+      
+      // Add slide title as a background element
+      if (slide.title) {
+        pptxSlide.addText(slide.title, {
+          x: 0.5,
+          y: 0.2,
+          w: '90%',
+          h: 0.5,
+          fontSize: 24,
+          bold: true,
+          align: 'center',
+          color: '363636'
+        });
+      }
+      
+      // Add elements to slide
+      slide.elements.forEach((element) => {
+        // Convert pixels to inches (approximate conversion for PowerPoint)
+        const xInch = (element.x / 72); // 72 pixels per inch
+        const yInch = (element.y / 72);
+        const wInch = (element.width / 72);
+        const hInch = (element.height / 72);
+        
+        switch (element.type) {
+          case 'text':
+            pptxSlide.addText(element.text || 'Text', {
+              x: xInch,
+              y: yInch,
+              w: wInch,
+              h: hInch,
+              fontSize: element.fontSize || 16,
+              fontFace: element.fontFamily || 'Arial',
+              bold: element.fontWeight === 'bold',
+              color: element.fill?.replace('#', '') || '212121',
+              align: element.textAlign || 'left'
+            });
+            break;
+            
+          case 'rectangle':
+            pptxSlide.addShape(pptx.ShapeType.rect, {
+              x: xInch,
+              y: yInch,
+              w: wInch,
+              h: hInch,
+              fill: { color: element.fill?.replace('#', '') || '1976D2' },
+              line: element.stroke ? {
+                color: element.stroke.replace('#', ''),
+                width: element.strokeWidth || 1
+              } : undefined
+            });
+            break;
+            
+          case 'circle':
+            pptxSlide.addShape(pptx.ShapeType.ellipse, {
+              x: xInch,
+              y: yInch,
+              w: wInch,
+              h: hInch,
+              fill: { color: element.fill?.replace('#', '') || '1976D2' },
+              line: element.stroke ? {
+                color: element.stroke.replace('#', ''),
+                width: element.strokeWidth || 1
+              } : undefined
+            });
+            break;
+            
+          case 'line':
+            pptxSlide.addShape(pptx.ShapeType.line, {
+              x: xInch,
+              y: yInch,
+              w: wInch,
+              h: hInch,
+              line: {
+                color: element.stroke?.replace('#', '') || element.fill?.replace('#', '') || '212121',
+                width: element.strokeWidth || 2
+              }
+            });
+            break;
+            
+          case 'image':
+            if (element.src) {
+              try {
+                pptxSlide.addImage({
+                  data: element.src,
+                  x: xInch,
+                  y: yInch,
+                  w: wInch,
+                  h: hInch
+                });
+              } catch (imageError) {
+                console.warn('Failed to add image to slide:', imageError);
+              }
+            }
+            break;
+        }
+      });
+    });
     
-    URL.revokeObjectURL(link.href);
+    // Generate and download the PPTX file
+    await pptx.writeFile({ fileName: `${presentation.title || 'presentation'}.pptx` });
+    
   } catch (error) {
     console.error('Error saving presentation:', error);
     throw new Error('Failed to save presentation. Please try again.');
   }
 };
 
-// Load presentation from JSON file
+// Load presentation from JSON file (keeping JSON for compatibility)
 export const loadPresentation = (): Promise<Presentation | null> => {
   return new Promise((resolve, reject) => {
     const input = document.createElement('input');
@@ -102,29 +202,16 @@ export const isFileSystemAccessSupported = (): boolean => {
   return 'showSaveFilePicker' in window;
 };
 
-// Modern file save using File System Access API (if supported)
+// Modern file save using File System Access API (if supported) - now saves as PPTX
 export const saveWithFileSystemAccess = async (presentation: Presentation): Promise<void> => {
   if (!isFileSystemAccessSupported()) {
     throw new Error('File System Access API not supported');
   }
 
   try {
-    const fileHandle = await (window as any).showSaveFilePicker({
-      suggestedName: `${presentation.title || 'presentation'}.json`,
-      types: [
-        {
-          description: 'JSON files',
-          accept: {
-            'application/json': ['.json'],
-          },
-        },
-      ],
-    });
-
-    const writable = await fileHandle.createWritable();
-    const dataStr = JSON.stringify(presentation, null, 2);
-    await writable.write(dataStr);
-    await writable.close();
+    // For File System Access API, we'll use the regular save method
+    // since pptxgenjs handles the file creation
+    await savePresentation(presentation);
   } catch (error) {
     if ((error as Error).name === 'AbortError') {
       // User cancelled, don't throw error
