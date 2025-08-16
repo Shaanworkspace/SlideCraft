@@ -8,10 +8,16 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        // Ignore fabric.js objects in the state
-        ignoredActions: ['presentation/updateCanvasState'],
-        ignoredActionsPaths: ['payload.canvasState'],
-        ignoredPaths: ['presentation.slides.canvasState'],
+        // Ignore fabric.js objects and Date objects in the state
+        ignoredActions: ['presentation/updateCanvasState', 'presentation/createNewPresentation', 'presentation/loadPresentation'],
+        ignoredActionsPaths: ['payload.canvasState', 'payload.createdAt', 'payload.updatedAt'],
+        ignoredPaths: [
+          'presentation.slides.canvasState',
+          'presentation.presentation.createdAt',
+          'presentation.presentation.updatedAt',
+          'presentation.history.past',
+          'presentation.history.future'
+        ],
       },
     }),
 });

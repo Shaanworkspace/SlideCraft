@@ -28,8 +28,9 @@ export const CanvasArea: React.FC<CanvasAreaProps> = ({ onExportSlide }) => {
 
     const handleCanvasClick = (e: any) => {
       if (ui.selectedTool === 'select') return;
-
-      const pointer = canvas.getPointer(e.e);
+      
+      console.log('Canvas clicked with tool:', ui.selectedTool);
+      const pointer = canvas.getPointer(e.e || e);
       
       dispatch(saveToHistory());
       
@@ -112,12 +113,16 @@ export const CanvasArea: React.FC<CanvasAreaProps> = ({ onExportSlide }) => {
       addElementToCanvas(newElement);
     };
 
+    // Use multiple event types to ensure clicks are detected
     canvas.on('mouse:down', handleCanvasClick);
+    canvas.on('mouse:up', (e: any) => {
+      console.log('Mouse up event:', ui.selectedTool);
+    });
 
     return () => {
       canvas.off('mouse:down', handleCanvasClick);
     };
-  }, [canvas, ui.selectedTool, dispatch, addElementToCanvas]);
+  }, [canvas, ui.selectedTool, dispatch, addElementToCanvas, presentation]);
 
   // Handle image upload
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
