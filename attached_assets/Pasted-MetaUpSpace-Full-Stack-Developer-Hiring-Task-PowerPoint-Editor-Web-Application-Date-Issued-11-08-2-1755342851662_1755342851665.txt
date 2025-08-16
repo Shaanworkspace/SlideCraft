@@ -1,0 +1,88 @@
+MetaUpSpace
+Full Stack Developer Hiring Task: PowerPoint Editor Web Application
+Date Issued: 11/08/2025 Submission Deadline: 17/08/2025
+Objective
+Build a full-stack, production-ready web application that replicates the core functionality of a PowerPoint-style
+presentation editor. The application should allow users to create, manage, and edit presentations with multiple
+slides and interactive elements. The final presentation should be saveable to the user's local machine and be
+reloadable for future editing.
+This task is designed to assess your skills in frontend architecture, canvas manipulation, state management,
+backend integration (optional), and production deployment.
+Task Requirements
+1. Presentation Editor (Slide & Element Management) Build a slide-based presentation editor interface
+using Fabric.js. Users must be able to:
+● Add a new, blank slide to the presentation.
+● Delete any existing slide.
+● Switch between slides to edit them.
+● Add, edit, move, and resize elements on the canvas, including:
+○ Text boxes
+○ Images (from a URL or local file upload)
+○ Basic shapes (rectangles, circles, lines)
+● Store the content of each slide as a JSON object, representing the Fabric.js canvas state.
+2. State Management Utilize Redux Toolkit for robust global state management to:
+● Maintain the main slides array, where each element represents a slide's content.
+● Track the activeSlide that is currently being edited.
+● Manage the editor's UI state (e.g., the currently selected tool, properties of a selected element).
+3. Persistence (Local Save & Load) Implement functionality to save and load the presentation:
+● Save: Save the entire presentation (all slides and their content) to the user’s local file system as a
+single .json file.
+● Load: Allow a user to load a previously saved .json presentation file from their device, restoring the
+editor to its saved state.
+● Ensure that the design, layout, and content of all slides are perfectly preserved when loading a saved
+file.
+MetaUpSpace
+4. UI/UX Features Create a clean and intuitive user interface using Tailwind CSS:
+● Slide Thumbnails: Display a list of slide thumbnails on the left side for easy navigation and selection.
+● Canvas Area: A central canvas area for editing the active slide, powered by Fabric.js.
+● Toolbar: A toolbar with controls for adding new elements (text, shapes, images) and modifying
+properties of selected elements (e.g., color, font size).
+5. Hosting and Deployment
+● Host the completed application on Vercel or Netlify.
+● Ensure all features, including file uploads and saving, are fully functional in the production
+environment.
+● Provide the live URL for review.
+Technical Guidelines
+● Frontend Framework: Next.js 15 (App Router)
+● Language: TypeScript (with strict mode enabled)
+● Canvas Library: Fabric.js
+● State Management: Redux Toolkit
+● Styling: Tailwind CSS
+● Persistence: Browser File System Access API or standard input/anchor elements for saving/loading
+files.
+● Hosting: Vercel or Netlify (free tier only).
+● Dependencies: All libraries and dependencies must be free and open-source.
+Bonus Features (Optional)
+Demonstrate advanced skills by implementing any of the following:
+● Undo/Redo functionality.
+● The ability to export a single slide as a PNG or JPEG image.
+● A mobile-responsive layout that adapts for smaller screens.
+● (Advanced) A lightweight Next.js API route for temporarily saving/sharing a presentation.
+Evaluation Criteria
+Submissions will be evaluated based on the following criteria:
+● Technical Implementation (40%)
+○ Code quality, project structure, and clear documentation.
+○ Correct and efficient use of Next.js, Redux Toolkit, and Fabric.js.
+○ Robust implementation of the local JSON save/load functionality.
+MetaUpSpace
+● UX/UI and Features (30%)
+○ Overall usability and intuitiveness of the editor.
+○ Functionality of the toolbar, canvas, and slide navigation.
+○ Accuracy and fidelity of the presentation when saved and reloaded.
+● Production Readiness (30%)
+○ Successful and stable deployment on a public URL.
+○ Proper error handling and application performance.
+Submission Guidelines
+1. Required Deliverables:
+● A public GitHub repository containing the full source code.
+● A comprehensive README.md file that includes:
+○ Clear setup and installation instructions.
+○ The live, hosted link to your application.
+○ A brief explanation of your project structure and key decisions.
+● An example .json file that can be used to test the "load presentation" functionality.
+2. Email Submission:
+● Send an email to hr@metaupspace.com .
+● Use the subject line: Full Stack Task Submission: PowerPoint Editor Application
+● In the body of the email, include a brief project summary, the public GitHub link, and the live
+deployment link.
+Important Note: Late submissions will not be accepted unless a prior extension has been approved. All tools
+and services used must be free. Good luck!
